@@ -1,0 +1,13 @@
+GET http://localhost:5000/factors?n=999999999999999998
+Accept: application/json
+
+###
+
+GET http://localhost:5000/stats
+Accept: application/json
+
+###
+
+GET http://localhost:5000/practitioner?id=1234
+Accept: application/json
+
