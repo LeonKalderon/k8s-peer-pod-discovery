@@ -22,7 +22,7 @@ spec:
     spec:
       containers:
         - name: {{ .Chart.Name }}
-          image: "pod-listener:0.0.8"
+          image: "pod-listener:0.1.5"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           command: ["/k8s-peer-pod-discovery"]
           env:
@@ -46,11 +46,11 @@ spec:
               protocol: TCP
           livenessProbe:
             httpGet:
-              path: /
+              path: /livenessProbe
               port: http
           readinessProbe:
             httpGet:
-              path: /
+              path: /readinessProbe
               port: http
           resources:
 {{ toYaml .Values.resources | indent 12 }}

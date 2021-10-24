@@ -10,7 +10,7 @@ image:
   pullPolicy: Never # IfNotPresent
 
 service:
-  name: k8s-peer-pod-discoverer
+  name: k8s-peer-pod-discovery
   type: NodePort
   internalPort: 5000
   externalPort: 5000

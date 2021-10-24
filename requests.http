@@ -11,3 +11,7 @@ Accept: application/json
 GET http://localhost:5000/practitioner?id=1234
 Accept: application/json
 
+###
+
+GET http://172.17.0.6:5000/informer/list
+Accept: application/json

@@ -1,6 +1,6 @@
 module com.github/LeonKalderon/k8s-peer-pod-discovery
 
-go 1.16
+go 1.17
 
 require (
 	k8s.io/api v0.22.2
