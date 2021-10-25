@@ -7,7 +7,7 @@ import (
 
 const Port = 5000
 
-type UrlSet map[string]bool
+type UrlSet map[string]string
 func (urlSet UrlSet) Keys() []string {
 	keys := make([]string, len(urlSet))
 	i := 0

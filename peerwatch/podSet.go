@@ -2,6 +2,7 @@ package peerwatch
 
 import (
     "fmt"
+    v1 "k8s.io/api/core/v1"
     "sort"
 )
 
@@ -21,4 +22,13 @@ func (podSet podSet) Keys() []string {
 
 func (podSet podSet) String() string {
     return fmt.Sprintf("%v", podSet.Keys())
+}
+
+func isPodReady(pod *v1.Pod) bool {
+    for _, condition := range pod.Status.Conditions {
+        if condition.Type == v1.PodReady && condition.Status == v1.ConditionTrue {
+            return true
+        }
+    }
+    return false
 }
