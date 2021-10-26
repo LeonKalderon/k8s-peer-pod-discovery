@@ -11,7 +11,7 @@ minikube dashboard --url
 
 ```
 $ eval $(minikube docker-env)
-$ docker build -t pod-listener:0.0.13 .
+$ docker build -t pod-listener:0.1.25 .
 
 $ kubectl create clusterrolebinding default-admin --clusterrole cluster-admin --serviceaccount=default:default
 $ helm install k8s-peer-pod-discovery helm-chart/

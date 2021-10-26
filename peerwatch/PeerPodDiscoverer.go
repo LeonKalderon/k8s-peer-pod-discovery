@@ -79,8 +79,6 @@ func NewPeerPodDiscoverer() PeerPodDiscoverer {
 func (d peerPodDiscoverer) Run(ctx context.Context) {
 	d.informer.AddEventHandler(
 		cache.ResourceEventHandlerFuncs{
-			AddFunc:    d.onAdd,
-			DeleteFunc: d.onDelete,
 			UpdateFunc: d.onUpdate,
 		},
 	)
@@ -93,22 +91,20 @@ func (d peerPodDiscoverer) Run(ctx context.Context) {
 	}
 }
 
-func (d peerPodDiscoverer) onAdd(obj interface{}) {
-	pod := obj.(*v1.Pod)
-	if isPodReady(pod) && pod.Status.PodIP != d.thisIP {
-		d.urlSet[pod.Status.PodIP] = fmt.Sprint(pod.Status.Conditions)
-	}
-}
-
-func (d peerPodDiscoverer) onDelete(obj interface{}) {
-	pod := obj.(*v1.Pod)
-	delete(d.urlSet, pod.Status.PodIP)
-}
-
 func (d peerPodDiscoverer) onUpdate(oldObj, newObj interface{}) {
+	oldPod := oldObj.(*v1.Pod)
 	newPod := newObj.(*v1.Pod)
+
 	if isPodReady(newPod) && newPod.Status.PodIP != d.thisIP {
 		d.urlSet[newPod.Status.PodIP] = fmt.Sprint(newPod.Status.Conditions)
+	} else {
+		delete(d.urlSet, newPod.Status.PodIP)
+	}
+
+	if isPodReady(oldPod) && oldPod.Status.PodIP != d.thisIP {
+		d.urlSet[oldPod.Status.PodIP] = fmt.Sprint(oldPod.Status.Conditions)
+	} else {
+		delete(d.urlSet, oldPod.Status.PodIP)
 	}
 }
 
