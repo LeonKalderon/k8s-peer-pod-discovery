@@ -113,3 +113,12 @@ func (d peerPodDiscoverer) List(w http.ResponseWriter, r *http.Request) {
 	_, _ = w.Write([]byte(fmt.Sprintf("%v \n", d.urlSet.String())))
 	w.WriteHeader(http.StatusOK)
 }
+
+func isPodReady(pod *v1.Pod) bool {
+	for _, condition := range pod.Status.Conditions {
+		if condition.Type == v1.PodReady && condition.Status == v1.ConditionTrue {
+			return true
+		}
+	}
+	return false
+}
