@@ -1,7 +1,7 @@
 package main
 
 import (
-    "com.github/LeonKalderon/k8s-peer-pod-discovery/peerwatch"
+    "com.github/LeonKalderon/k8s-peer-pod-discovery/discoveror"
     "context"
     "fmt"
     "log"
@@ -19,13 +19,14 @@ func main() {
     ctx, cancel := context.WithCancel(ctx)
     defer cancel()
 
-    discoveror := peerwatch.NewPeerPodDiscoverer()
+    discoveror := discoveror.NewPeerPodDiscoverer()
     go discoveror.Run(ctx)
     
     http.HandleFunc("/readinessProbe", Index)
     http.HandleFunc("/livenessProbe", Index)
     http.HandleFunc("/informer/list", discoveror.List)
     log.Printf("Listening on port %d...", Port)
+
     if err := http.ListenAndServe(fmt.Sprintf("0.0.0.0:%d", Port), http.DefaultServeMux); err != nil {
         log.Fatalf("error in ListenAndServe: %s", err)
     }

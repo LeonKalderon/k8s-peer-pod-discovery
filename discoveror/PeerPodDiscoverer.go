@@ -1,4 +1,4 @@
-package peerwatch
+package discoveror
 
 import (
 	"context"
@@ -10,7 +10,6 @@ import (
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/rest"
 	"k8s.io/client-go/tools/cache"
-	"log"
 	"net/http"
 	"os"
 	"time"
@@ -46,10 +45,6 @@ func NewPeerPodDiscoverer() PeerPodDiscoverer {
 	nameSpace := os.Getenv("NAMESPACE")
 	appName := os.Getenv("DEPLOYMENT_NAME")
 
-	log.Println("IP: " + thisIP)
-	log.Println("NAMESPACE: " + nameSpace)
-	log.Println("APP_NAME: " + appName)
-
 	listOptions := metav1.ListOptions{
 		LabelSelector: fmt.Sprintf("app=%s", appName),
 	}
@@ -84,11 +79,13 @@ func (d peerPodDiscoverer) Run(ctx context.Context) {
 	)
 
 	stopper := make(chan struct{})
-	go d.informer.Run(stopper)
-	select {
-	case <-ctx.Done():
-		close(stopper)
-	}
+	go func() {
+		go d.informer.Run(stopper)
+		select {
+		case <-ctx.Done():
+			close(stopper)
+		}
+	}()
 }
 
 func (d peerPodDiscoverer) onUpdate(oldObj, newObj interface{}) {
@@ -109,7 +106,7 @@ func (d peerPodDiscoverer) onUpdate(oldObj, newObj interface{}) {
 }
 
 func (d peerPodDiscoverer) List(w http.ResponseWriter, r *http.Request) {
-	_, _ = w.Write([]byte("List Informer"))
+	_, _ = w.Write([]byte("List of peer Pod IPs: "))
 	_, _ = w.Write([]byte(fmt.Sprintf("%v \n", d.urlSet.String())))
 	w.WriteHeader(http.StatusOK)
 }

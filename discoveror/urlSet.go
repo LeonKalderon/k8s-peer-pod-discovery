@@ -1,4 +1,4 @@
-package peerwatch
+package discoveror
 
 import (
 	"fmt"
@@ -20,8 +20,4 @@ func (urlSet UrlSet) Keys() []string {
 }
 func (urlSet UrlSet) String() string {
 	return fmt.Sprintf("%v", urlSet.Keys())
-}
-
-func GetPodUrl(podIp string) string {
-	return fmt.Sprintf("http://%s:%d", podIp, Port)
 }
